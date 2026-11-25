@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}History{% endblock %}
+{% block content %}
+<div class="card">
+  <h3>Transaction History</h3>
+  <p class="muted">{{ acc.account_no }}</p>
+  {% include "_txn_table.html" %}
+</div>
+{% endblock %}

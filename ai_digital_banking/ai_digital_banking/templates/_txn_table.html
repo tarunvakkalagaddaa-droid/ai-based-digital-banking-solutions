@@ -1,0 +1,25 @@
+{% if txns %}
+<table>
+  <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Note</th><th>Category</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for t in txns %}
+    <tr>
+      <td>{{ t.created_at }}</td>
+      <td>{{ t.type.replace('_', ' ').title() }}</td>
+      <td class="{{ 'neg' if t.type in ('withdraw','transfer_out') else 'pos' }}">
+        {{ '-' if t.type in ('withdraw','transfer_out') else '+' }}Rs. {{ "{:,.2f}".format(t.amount) }}
+      </td>
+      <td>{{ t.description or '-' }}</td>
+      <td>{{ t.category }}</td>
+      <td>
+        {% if t.status == 'blocked' %}<span class="badge red" title="{{ t.fraud_reasons }}">Blocked (risk {{ t.fraud_score }})</span>
+        {% elif t.fraud_score >= 40 %}<span class="badge amber" title="{{ t.fraud_reasons }}">Flagged (risk {{ t.fraud_score }})</span>
+        {% else %}<span class="badge green">OK</span>{% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="muted">No transactions yet.</p>
+{% endif %}

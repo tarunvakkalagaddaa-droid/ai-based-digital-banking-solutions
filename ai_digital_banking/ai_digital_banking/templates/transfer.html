@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Transfer{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h2>Transfer Money</h2>
+  <form method="post">
+    <label>Recipient account number <input type="text" name="to_account" placeholder="AIB123456789" required></label>
+    <label>Amount (Rs.) <input type="number" name="amount" step="0.01" min="0.01" required></label>
+    <label>Note <input type="text" name="description" placeholder="e.g. rent, dinner"></label>
+    <button type="submit">Send</button>
+  </form>
+
+  {% if result %}
+    <div class="flash {{ {'ok':'success','flagged':'warn','blocked':'error'}[result.level] }}">
+      {% if result.level == 'ok' %}Transfer completed. Fraud risk score: {{ result.score }}/100.
+      {% elif result.level == 'flagged' %}Transfer completed but flagged for review (risk {{ result.score }}/100).
+      {% else %}Transfer BLOCKED by fraud-detection AI (risk {{ result.score }}/100).{% endif %}
+      {% if result.reasons %}<ul>{% for r in result.reasons %}<li>{{ r }}</li>{% endfor %}</ul>{% endif %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

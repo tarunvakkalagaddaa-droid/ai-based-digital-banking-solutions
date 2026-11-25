@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="grid">
+  <div class="card">
+    <h3>Account</h3>
+    <p class="muted">{{ acc.account_no }}</p>
+    <p class="balance">Rs. {{ "{:,.2f}".format(acc.balance) }}</p>
+    <form method="post" action="{{ url_for('money') }}" class="inline">
+      <input type="number" name="amount" step="0.01" min="0.01" placeholder="Amount" required>
+      <input type="text" name="description" placeholder="Note (e.g. grocery, salary)">
+      <button name="action" value="deposit">Deposit</button>
+      <button name="action" value="withdraw" class="secondary">Withdraw</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>AI Spending Insights</h3>
+    <p>{{ insights.tip }}</p>
+    {% for cat, amt in insights.totals.items() %}
+      <div class="bar-row">
+        <span>{{ cat }}</span>
+        <div class="bar"><div style="width: {{ (amt / insights.total_spent * 100)|round(0) }}%"></div></div>
+        <span>Rs. {{ "{:,.0f}".format(amt) }}</span>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="card">
+  <h3>Recent Transactions</h3>
+  {% include "_txn_table.html" %}
+</div>
+{% endblock %}

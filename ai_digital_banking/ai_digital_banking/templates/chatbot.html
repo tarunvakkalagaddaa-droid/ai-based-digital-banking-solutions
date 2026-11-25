@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Assistant{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h2>AI Banking Assistant</h2>
+  <div id="chat" class="chat"></div>
+  <form id="chat-form" class="inline">
+    <input id="msg" type="text" placeholder="Ask about balance, spending, loans..." autocomplete="off" required>
+    <button type="submit">Send</button>
+  </form>
+</div>
+<script>
+  const chat = document.getElementById('chat');
+  function add(text, who) {
+    const d = document.createElement('div');
+    d.className = 'bubble ' + who;
+    d.textContent = text;          // textContent prevents HTML injection
+    chat.appendChild(d);
+    chat.scrollTop = chat.scrollHeight;
+  }
+  add("Hi! I'm your AI banking assistant. How can I help?", 'bot');
+  document.getElementById('chat-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const input = document.getElementById('msg');
+    const text = input.value.trim();
+    if (!text) return;
+    add(text, 'me');
+    input.value = '';
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({message: text})
+    });
+    const data = await res.json();
+    add(data.reply, 'bot');
+  });
+</script>
+{% endblock %}

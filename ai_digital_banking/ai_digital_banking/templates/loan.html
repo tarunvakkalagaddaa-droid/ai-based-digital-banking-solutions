@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Loan{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h2>AI Loan Eligibility</h2>
+  <form method="post">
+    <label>Monthly income (Rs.) <input type="number" name="income" min="1" required></label>
+    <label>Existing monthly EMIs (Rs.) <input type="number" name="existing_emi" min="0" value="0"></label>
+    <label>Loan amount (Rs.) <input type="number" name="amount" min="1" required></label>
+    <label>Tenure (months) <input type="number" name="tenure" min="1" max="360" required></label>
+    <button type="submit">Check Eligibility</button>
+  </form>
+  {% if result %}
+    <div class="flash {{ 'success' if result.eligible else 'error' }}">
+      <strong>Credit score: {{ result.score }}</strong>
+      {% if result.dti is defined %} &middot; Debt-to-income: {{ result.dti }}%{% endif %}
+      <p>{{ result.message }}</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
